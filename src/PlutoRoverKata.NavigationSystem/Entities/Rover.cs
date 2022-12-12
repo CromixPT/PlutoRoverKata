@@ -8,22 +8,10 @@ using System.Threading.Tasks;
 namespace PlutoRoverKata.NavigationSystem.Entities;
 public sealed class Rover : PlanetaryVehicle
 {
+
     public Rover(int Id,Position position, Direction direction):base(Id, position, direction)
     {
 
-    }
-
-    public override void MoveBackards()
-    {
-        //Move backwards rotates the rover moves forwards and then rotates back to original direction.
-        FlipDirection();
-        Move();
-        FlipDirection();
-    }
-
-    public override void MoveForward()
-    {
-        Move();
     }
 
     public override void RotateLeft()
@@ -50,25 +38,53 @@ public sealed class Rover : PlanetaryVehicle
         };
     }
 
-    private void Move()
+    public override Position PlanMove(RoverActions action)
+    {
+        var position = this.Position;
+        switch (action)
+        {
+            case RoverActions.MoveForward:
+                position = PositionAfterMovement(position);
+                break;
+            case RoverActions.MoveBackward:
+                FlipDirection();
+                position = PositionAfterMovement(position);
+                FlipDirection();
+                break;
+            default:
+                return Position;
+        }
+        return position;
+
+    }
+
+    public override void UpdatePosition(Position position)
+    {
+        Position = position;
+
+    }
+
+    private Position PositionAfterMovement(Position position)
     {
         switch (Direction)
         {
             case Direction.North:
-                Position.IncreaseY();
+                position.IncreaseY();
                 break;
             case Direction.East:
-                Position.IncreaseX();
+                position.IncreaseX();
                 break;
             case Direction.South:
-                Position.DecreaseY();
+                position.DecreaseY();
                 break;
             case Direction.West:
-                Position.DecreaseX();
+                position.DecreaseX();
                 break;
             default:
                 break;
         }
+
+        return position;
     }
 
     private void FlipDirection()

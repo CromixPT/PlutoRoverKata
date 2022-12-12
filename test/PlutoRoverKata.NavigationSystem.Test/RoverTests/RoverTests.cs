@@ -16,7 +16,8 @@ public class RoverTests
         //Arrange
         var rover = new Rover(1, _startingPosition,startingDirection);
         //Act
-        rover.MoveForward();
+        var position = rover.PlanMove(RoverActions.MoveForward);
+        rover.UpdatePosition(position);
 
         //Assert
         rover.Position.Should().Be(expectedPosition);
@@ -33,7 +34,8 @@ public class RoverTests
         //Arrange
         var rover = new Rover(1, _startingPosition, startingDirection);
         //Act
-        rover.MoveBackards();
+        var position = rover.PlanMove(RoverActions.MoveBackward);
+        rover.UpdatePosition(position);
 
         //Assert
         rover.Position.Should().Be(expectedPosition);
@@ -77,6 +79,18 @@ public class RoverTests
         //Assert
         rover.Position.Should().Be(_startingPosition);
         rover.Direction.Should().Be(expectedDirection);
+    }
+
+    [Fact]
+    public void RoverIssuedPlanMoveCommandShouldNotUpdatePosition()
+    {
+        var rover = new Rover(1,_startingPosition,Direction.North);
+
+        var result = rover.PlanMove(RoverActions.MoveForward);
+
+        result.YCoordinate.Should().Be(11);
+        rover.Position.Should().Be(_startingPosition);
+
     }
 
 

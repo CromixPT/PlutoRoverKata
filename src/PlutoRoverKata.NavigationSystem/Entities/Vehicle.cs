@@ -51,8 +51,8 @@ public abstract class PlanetaryVehicle : IEquatable<PlanetaryVehicle>
         return Id.GetHashCode();
     }
 
-    public abstract void MoveForward();
-    public abstract void MoveBackards();
     public abstract void RotateLeft();
     public abstract void RotateRight();
+    public abstract Position PlanMove(RoverActions action);
+    public abstract void UpdatePosition(Position position);
 }
