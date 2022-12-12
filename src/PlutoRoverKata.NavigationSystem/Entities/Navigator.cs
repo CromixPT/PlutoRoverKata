@@ -1,4 +1,5 @@
-﻿using PlutoRoverKata.NavigationSystem.Enums;
+﻿using Microsoft.Extensions.Options;
+using PlutoRoverKata.NavigationSystem.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,27 @@ namespace PlutoRoverKata.NavigationSystem.Entities;
 public class Navigator
 {
 
-    private const char _moveForward = 'F';
-    private const char _moveBackward = 'B';
-    private const char _rotateLeft = 'L';
-    private const char _rotateRight = 'R';
+    private const char MoveForward = 'F';
+    private const char MoveBackward = 'B';
+    private const char RotateLeft = 'L';
+    private const char RotateRight = 'R';
     
 
 	private readonly PlanetaryVehicle _vehicle;
 	private readonly PlanetaryGrid _planetaryGrid;
 
-	public Navigator(PlanetaryVehicle rover, PlanetaryGrid planetaryGrid)
+    private readonly RoverOptions _roverOptions;
+    private readonly PlanetaryGridOptions _gridOptions;
+
+    public Navigator(IOptions<RoverOptions> roverOptions, IOptions<PlanetaryGridOptions> gridOptions)
     {
-        _vehicle = rover;
-        _planetaryGrid = planetaryGrid;
+
+        _roverOptions = roverOptions.Value;
+        _gridOptions = gridOptions.Value;
+
+        _vehicle = new Rover(1, _roverOptions.Position, _roverOptions.Direction);
+        _planetaryGrid = new PlanetaryGrid(_gridOptions.Height, _gridOptions.Widht);
+        
     }
 
 
@@ -30,16 +39,16 @@ public class Navigator
         foreach (var instruction in instructions.ToUpperInvariant())
         {
             switch (instruction) {
-                case _moveForward:
+                case MoveForward:
                     PerformActionIfSafe(RoverActions.MoveForward);
                     break;
-                case _moveBackward:
+                case MoveBackward:
                     PerformActionIfSafe(RoverActions.MoveBackward);
                     break;
-                case _rotateLeft:
+                case RotateLeft:
                     _vehicle.RotateLeft();
                     break;
-                case _rotateRight:
+                case RotateRight:
                     _vehicle.RotateRight();
                     break;
                 default:
