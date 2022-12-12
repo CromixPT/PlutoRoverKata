@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.Extensions.Options;
 using PlutoRoverKata.NavigationSystem.Entities;
 using PlutoRoverKata.NavigationSystem.Enums;
 using System;
@@ -15,11 +16,22 @@ public class NavigatorTests
     public NavigatorTests()
     {
         var startPosition = new Position(0, 0);
-        var rover = new Rover(1, startPosition, Direction.North);
-        var planetaryGrid = new PlanetaryGrid(10, 10);
+
+        var roverOptions = Options.Create(new RoverOptions
+        {
+            Direction = Direction.North,
+            Position = startPosition,
+        });        
+
+        var planetaryGridOptions = Options.Create(new PlanetaryGridOptions
+        {
+            Height = 10,
+            Widht = 10
+        });
 
 
-        _navigator = new Navigator(rover, planetaryGrid);
+
+        _navigator = new Navigator(roverOptions,planetaryGridOptions);
     }
 
 
