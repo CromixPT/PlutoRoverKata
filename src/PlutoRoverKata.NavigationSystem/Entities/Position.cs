@@ -10,6 +10,11 @@ public sealed class Position : IEquatable<Position>
         YCoordinate= y;
     }
 
+    public Position ClonePosition()
+    {
+        return new Position(XCoordinate, YCoordinate);
+    }
+
     public void IncreaseX() => XCoordinate++;
     public void DecreaseX() => XCoordinate--;
     public void IncreaseY() => YCoordinate++;

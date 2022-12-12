@@ -85,11 +85,12 @@ public class RoverTests
     public void RoverIssuedPlanMoveCommandShouldNotUpdatePosition()
     {
         var rover = new Rover(1,_startingPosition,Direction.North);
+        var expectedPosition = new Position(10, 10);
 
         var result = rover.PlanMove(RoverActions.MoveForward);
 
         result.YCoordinate.Should().Be(11);
-        rover.Position.Should().Be(_startingPosition);
+        rover.Position.Should().Be(expectedPosition);
 
     }
 

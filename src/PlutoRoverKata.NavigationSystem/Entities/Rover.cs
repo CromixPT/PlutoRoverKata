@@ -40,7 +40,7 @@ public sealed class Rover : PlanetaryVehicle
 
     public override Position PlanMove(RoverActions action)
     {
-        var position = this.Position;
+        var position = Position.ClonePosition();
         switch (action)
         {
             case RoverActions.MoveForward:
