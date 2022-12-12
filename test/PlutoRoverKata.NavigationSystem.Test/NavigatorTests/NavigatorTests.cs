@@ -29,11 +29,11 @@ public class NavigatorTests
     public void SingleInstructionPerformsVehicleAction(string instruction)
     {
         //act
-        _navigator.ProcessReceivedInstructions(instruction);
+        var position = _navigator.ProcessReceivedInstructions(instruction);
 
 
         //assert
-        _navigator.LocateVehicle().Should().Be(new Position(0, 1));
+        position.Should().Be(new Position(0, 1));
 
     }
 
@@ -43,33 +43,43 @@ public class NavigatorTests
     public void MultipleInstructionPerformsVehicleAction(string instruction)
     {
         //act
-        _navigator.ProcessReceivedInstructions(instruction);
+        var position = _navigator.ProcessReceivedInstructions(instruction);
 
 
         //assert
-        _navigator.LocateVehicle().Should().Be(new Position(0, 5));
+        position.Should().Be(new Position(0, 5));
     }
 
     [Theory]
     [MemberData(nameof(OffGridTests))]
     public void RoverShouldRemainInsideThePlanetaryGrid(string instruction, Position expectedPosition)
     {
-        //var instruction = new string('F', 11);
+        //act
+        var position = _navigator.ProcessReceivedInstructions(instruction);
 
-        _navigator.ProcessReceivedInstructions(instruction);
-
-        _navigator.LocateVehicle().Should().Be(expectedPosition);
+        //assert
+        position.Should().Be(expectedPosition);
     }
 
     [Theory]
     [MemberData(nameof(HappyScenarioTests))]
     public void ProcessValidInstructionsShouldMoveRoverPositionAndFacingDirection(string instruction, Position expectedPosition, Direction expectedFacingDirection)
     {
-        //var instruction = new string('F', 11);
+        
+        var position = _navigator.ProcessReceivedInstructions(instruction);
 
-        _navigator.ProcessReceivedInstructions(instruction);
+        position.Should().Be(expectedPosition);
+        _navigator.GetVehicleFacingDirection().Should().Be(expectedFacingDirection);
+    }
 
-        _navigator.LocateVehicle().Should().Be(expectedPosition);
+    [Theory]
+    [MemberData(nameof(HazzardTests))]
+    public void ProcessValidInstructionsShouldMoveRoverIntoUnsafePosition(string instruction, Position expectedPosition, Direction expectedFacingDirection)
+    {
+
+        var position = _navigator.ProcessReceivedInstructions(instruction);
+
+        position.Should().Be(expectedPosition);
         _navigator.GetVehicleFacingDirection().Should().Be(expectedFacingDirection);
     }
 
@@ -81,17 +91,22 @@ public class NavigatorTests
         yield return new object[] { "RB", new Position(0, 0) };
     }
 
+    public static IEnumerable<object[]> HazzardTests()
+    {
+        yield return new object[] { "FFFRFFFF", new Position(2, 3), Direction.East };
+    }
+
+
     public static IEnumerable<object[]> HappyScenarioTests()
     {
 
         yield return new object[] { "RFFLFF" , new Position(2, 2), Direction.North };
-        yield return new object[] { "FFFRFFFFBR" , new Position(3, 3), Direction.South };
-        yield return new object[] { "RRRR" , new Position(0, 0), Direction.North };
+        yield return new object[] { "RRRR", new Position(0, 0), Direction.North };
         yield return new object[] { "FFFFFFFFFFRFFFFFFFFFFRFFFFFFFFFFRFFFFFFFFFFR", new Position(0, 0), Direction.North };
-        yield return new object[] { "FB" , new Position(0, 0), Direction.North };
-        yield return new object[] { "FLLF" , new Position(0, 0), Direction.South };
-        yield return new object[] { "RFFFFFLFFFFF" , new Position(5, 5), Direction.North };
-        yield return new object[] { "RFFLFFFB" , new Position(2, 2), Direction.North };
+        yield return new object[] { "FB", new Position(0, 0), Direction.North };
+        yield return new object[] { "FLLF", new Position(0, 0), Direction.South };
+        yield return new object[] { "RFFFFFLFFFFF", new Position(5, 5), Direction.North };
+        yield return new object[] { "RFFLFFFB", new Position(2, 2), Direction.North };
 
     }
 

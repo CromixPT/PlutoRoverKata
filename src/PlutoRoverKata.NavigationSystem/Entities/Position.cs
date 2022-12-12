@@ -67,4 +67,9 @@ public sealed class Position : IEquatable<Position>
         return XCoordinate.GetHashCode() * YCoordinate.GetHashCode();
     }
 
+    public override string ToString()
+    {
+        return $"{XCoordinate}:{YCoordinate}";
+    }
+
 }
